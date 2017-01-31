@@ -8,16 +8,27 @@ package inc.gefest.org;
 
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
+
 public class Main {
 
-    private static final Logger logger = Logger.getLogger(Main.class);
+    private static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) {
-        logger.info("----------START LOGGING------------");
-        logger.debug("Hello world.");
-        logger.info("What a beautiful day.");
 
-        Person p = new Person("Ivanov", 23);
-        System.out.printf(p.toString());
+        logger.info("----------START LOGGING------------");
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            logger.error("setLookAndFeel error", e);
+        }
+
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new MainWindow();
+            }
+        });
+
     }
 }
