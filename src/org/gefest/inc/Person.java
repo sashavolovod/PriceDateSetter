@@ -4,7 +4,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3.
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
-package inc.gefest.org;
+package org.gefest.inc;
 
 class Person {
     private String name;

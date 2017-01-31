@@ -4,7 +4,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3.
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
-package inc.gefest.org;
+package org.gefest.inc;
 
 import java.util.Date;
 
@@ -18,7 +18,7 @@ public class OrderEntity {
 
     public OrderEntity() { }
 
-    public OrderEntity(int orderNumber, String fullOrderNumber, String caption, Date planDate, Date priceDate) {
+    OrderEntity(int orderNumber, String fullOrderNumber, String caption, Date planDate, Date priceDate) {
         this.orderNumber = orderNumber;
         this.fullOrderNumber = fullOrderNumber;
         this.caption = caption;

@@ -4,7 +4,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3.
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
-package inc.gefest.org;
+package org.gefest.inc;
 
 import org.apache.log4j.Logger;
 
@@ -24,11 +24,7 @@ public class Main {
             logger.error("setLookAndFeel error", e);
         }
 
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new MainWindow();
-            }
-        });
+        javax.swing.SwingUtilities.invokeLater(MainWindow::new);
 
     }
 }
