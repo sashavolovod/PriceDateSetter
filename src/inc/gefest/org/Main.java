@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         logger.info("----------START LOGGING------------");
         logger.debug("Hello world.");
-        logger.info("What a beatiful day.");
+        logger.info("What a beautiful day.");
 
         Person p = new Person("Ivanov", 23);
         System.out.printf(p.toString());
