@@ -12,13 +12,13 @@ import java.util.List;
 
 public class OrderEntityFactory {
 
-    List<OrderEntity> getOrderList() {
+    public static List<OrderEntity> getOrderList() {
         List<OrderEntity> list = new ArrayList<>();
         Date date = new Date();
-        list.add(new OrderEntity(70000, "208-70000","1221-454544", date,null));
-        list.add(new OrderEntity(70001, "233-70001","1221-321456", date,null));
-        list.add(new OrderEntity(70002, "233-70002","4235-741456", date,null));
-        list.add(new OrderEntity(70003, "233-70003","1324-567891", date,null));
+        list.add(new OrderEntity(70000, "208-70000","заказчик 1","1221-454544", date,null));
+        list.add(new OrderEntity(70001, "233-70001","заказчик 2","1221-321456", date,null));
+        list.add(new OrderEntity(70002, "233-70002","заказчик 3","4235-741456", date,null));
+        list.add(new OrderEntity(70003, "233-70003","заказчик 4","1324-567891", date,null));
 
         return list;
     }

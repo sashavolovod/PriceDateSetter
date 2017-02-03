@@ -15,12 +15,14 @@ public class OrderEntity {
     private String caption;
     private Date   planDate;
     private Date   priceDate;
+    private String customer;
 
     public OrderEntity() { }
 
-    OrderEntity(int orderNumber, String fullOrderNumber, String caption, Date planDate, Date priceDate) {
+    OrderEntity(int orderNumber, String fullOrderNumber, String customer, String caption, Date planDate, Date priceDate) {
         this.orderNumber = orderNumber;
         this.fullOrderNumber = fullOrderNumber;
+        this.customer = customer;
         this.caption = caption;
         this.planDate = planDate;
         this.priceDate = priceDate;
@@ -41,6 +43,10 @@ public class OrderEntity {
     public void setFullOrderNumber(String fullOrderNumber) {
         this.fullOrderNumber = fullOrderNumber;
     }
+
+    public String getCustomer() { return customer; }
+
+    public void setCustomer(String customer) { this.customer = customer; }
 
     public String getCaption() {
         return caption;

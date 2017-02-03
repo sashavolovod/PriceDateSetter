@@ -6,7 +6,10 @@
  */
 package org.gefest.inc;
 
+import net.miginfocom.swing.MigLayout;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
@@ -15,8 +18,9 @@ class MainWindow extends JFrame {
 
     private static final int DEFAULT_WIDTH = 648;
     private static final int DEFAULT_HEIGHT = 480;
-
     private Preferences prefs  = Preferences.userNodeForPackage(MainWindow.class).node("MainWindow");
+    private JTextField txtFilter = new JTextField();
+    private JTable table;
 
     MainWindow(){
         super();
@@ -49,6 +53,20 @@ class MainWindow extends JFrame {
     private void createUi() {
         setTitle("Программа установки даты оценки заказа");
         setSize(600,400);
+
+        TableModel model = new TableModel(OrderEntityFactory.getOrderList());
+        table = new JTable(model);
+
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        JPanel panel = new JPanel(new MigLayout("","[][grow]" , "[][grow]"));
+        panel.add(new JLabel("Фильтр: "));
+        panel.add(txtFilter, "growx, pushx, wrap");
+        panel.add(scroll, "span, grow");
+
+        add(panel, BorderLayout.CENTER);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         loadProperties();
