@@ -5,11 +5,13 @@
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
 package org.gefest.inc;
+import com.michaelbaranov.microba.calendar.DatePicker;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -61,6 +63,13 @@ class MainWindow extends JFrame {
         sorter = new TableRowSorter(model);
         table = new JTable(model);
         table.setRowSorter(sorter);
+
+
+
+        TableColumn priceDateColumn = table.getColumnModel().getColumn(4);
+
+        priceDateColumn.setCellEditor(new DatePickerCellEditor());
+
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
