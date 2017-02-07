@@ -44,6 +44,8 @@ public class OrderEntityFactory {
             String json = getUrl(url);
             list = gson.fromJson(json, new TypeToken<ArrayList<OrderEntity>>(){}.getType());
 
+            logger.info("Получено с сервера " + list.size() + " записей");
+
         } catch (IOException e) {
             logger.error("get json from server error", e);
         }
