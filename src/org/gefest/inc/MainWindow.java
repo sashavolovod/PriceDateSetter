@@ -5,7 +5,6 @@
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
 package org.gefest.inc;
-
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -55,14 +54,13 @@ class MainWindow extends JFrame {
     }
 
     private void createUi() {
-        setTitle("Программа установки даты оценки заказа");
+        setTitle("Программа установки даты согласования цены заказа");
         setSize(600,400);
 
-        TableModel model = new TableModel(OrderEntityFactory.getOrderList());
+        TableModel model = new TableModel(OrderEntityFactory.getOrderListFromServer());
         sorter = new TableRowSorter(model);
         table = new JTable(model);
         table.setRowSorter(sorter);
-
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -94,7 +92,6 @@ class MainWindow extends JFrame {
                 applyFilter();
             }
         });
-
         setVisible(true);
     }
 
@@ -111,7 +108,7 @@ class MainWindow extends JFrame {
             public boolean include(Entry entry) {
                 TableModel model = (TableModel) entry.getModel();
                 OrderEntity order = model.getOrder((int) entry.getIdentifier());
-                return order.toString().contains(filterString);
+                return order.toString().toLowerCase().contains(filterString.toLowerCase());
             }
         };
 
