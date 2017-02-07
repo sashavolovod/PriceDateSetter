@@ -6,6 +6,7 @@
  */
 package org.gefest.inc;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OrderEntity {
@@ -36,9 +37,7 @@ public class OrderEntity {
         this.orderNumber = orderNumber;
     }
 
-    public String getFullOrderNumber() {
-        return fullOrderNumber;
-    }
+    public String getFullOrderNumber() {    return fullOrderNumber;   }
 
     public void setFullOrderNumber(String fullOrderNumber) {
         this.fullOrderNumber = fullOrderNumber;
@@ -71,4 +70,14 @@ public class OrderEntity {
     public void setPriceDate(Date priceDate) {
         this.priceDate = priceDate;
     }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String planDateStr = planDate == null ? "" : dateFormat.format(planDate);
+        String priceDateStr = priceDate == null ? "" : dateFormat.format(priceDate);
+        return orderNumber + " " + fullOrderNumber + " " + caption + " " +
+                planDateStr + " " + priceDateStr + " " +    customer;
+    }
 }
+

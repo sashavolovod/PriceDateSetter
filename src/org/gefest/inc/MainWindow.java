@@ -9,6 +9,9 @@ package org.gefest.inc;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -21,6 +24,7 @@ class MainWindow extends JFrame {
     private Preferences prefs  = Preferences.userNodeForPackage(MainWindow.class).node("MainWindow");
     private JTextField txtFilter = new JTextField();
     private JTable table;
+    private TableRowSorter sorter;
 
     MainWindow(){
         super();
@@ -55,7 +59,10 @@ class MainWindow extends JFrame {
         setSize(600,400);
 
         TableModel model = new TableModel(OrderEntityFactory.getOrderList());
+        sorter = new TableRowSorter(model);
         table = new JTable(model);
+        table.setRowSorter(sorter);
+
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -70,6 +77,44 @@ class MainWindow extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         loadProperties();
+
+        txtFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+        });
+
         setVisible(true);
+    }
+
+    private void applyFilter() {
+        String filterString = txtFilter.getText().trim();
+        if(filterString.length()==0) {
+            System.out.println("clear filter");
+            sorter.setRowFilter(null);
+            return;
+        }
+
+        RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
+            @Override
+            public boolean include(Entry entry) {
+                TableModel model = (TableModel) entry.getModel();
+                OrderEntity order = model.getOrder((int) entry.getIdentifier());
+                return order.toString().contains(filterString);
+            }
+        };
+
+        sorter.setRowFilter(filter);
     }
 }

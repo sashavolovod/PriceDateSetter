@@ -53,4 +53,8 @@ public class TableModel extends AbstractTableModel {
                 return null;
         }
     }
+
+    public OrderEntity getOrder(int rowIndex) {
+        return orders.get(rowIndex);
+    }
 }
