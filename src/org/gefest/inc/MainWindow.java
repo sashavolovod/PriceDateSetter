@@ -8,9 +8,12 @@
 package org.gefest.inc;
 
 import net.miginfocom.swing.MigLayout;
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
@@ -25,6 +28,7 @@ class MainWindow extends JFrame {
     private static final int DEFAULT_WIDTH = 648;
     private static final int DEFAULT_HEIGHT = 480;
     private Preferences prefs  = Preferences.userNodeForPackage(MainWindow.class).node("MainWindow");
+    private static Logger logger = Logger.getLogger(MainWindow.class);
     private JTextField txtFilter = new JTextField();
     private JTable table;
     private TableRowSorter sorter;
@@ -67,13 +71,16 @@ class MainWindow extends JFrame {
         table = new JTable(model);
         table.setRowSorter(sorter);
 
-        table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+        //table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 
         TableColumn planDateColumn = table.getColumnModel().getColumn(3);
         planDateColumn.setCellRenderer(new DateFormatRenderer( format ));
         TableColumn priceDateColumn = table.getColumnModel().getColumn(4);
         priceDateColumn.setCellEditor(new DatePickerCellEditor());
         priceDateColumn.setCellRenderer(new DateFormatRenderer( format ));
+
+        ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(SwingConstants.CENTER);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -114,6 +121,8 @@ class MainWindow extends JFrame {
                 if (editor != null) {
                     editor.stopCellEditing();
                 }
+
+                logger.info("----------END LOGGING------------");
             }
         });
 
