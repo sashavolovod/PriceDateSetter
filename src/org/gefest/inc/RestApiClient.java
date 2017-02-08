@@ -30,13 +30,12 @@ import java.util.List;
 
 public class RestApiClient {
     private static Logger logger = Logger.getLogger(RestApiClient.class);
+    private static final String url = "http://tool/api/pricedate.php";
 
     public static boolean postDate(OrderEntity order){
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         String orderId = String.valueOf(order.getOrderNumber());
         String priceDate = (order.getPriceDate() == null ? "null" : format.format(order.getPriceDate()));
-
-        String url = "http://tool/api/pricedate.php";
 
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(url);
@@ -53,7 +52,7 @@ public class RestApiClient {
             response = client.execute(post);
 
             rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"windows-1251"));
-            String line = "";
+            String line;
             while ((line = rd.readLine()) != null) {
                 result.append(line);
             }
@@ -68,7 +67,6 @@ public class RestApiClient {
     }
 
     public static List<OrderEntity> getOrderListFromServer() {
-        final String url = "http://tool/api/pricedate.php";
         List<OrderEntity> list = new ArrayList<>();
         Gson gson = new Gson();
         try {
