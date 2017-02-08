@@ -4,18 +4,20 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3.
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
-package org.gefest.inc;
-import com.michaelbaranov.microba.calendar.DatePicker;
-import net.miginfocom.swing.MigLayout;
 
+package org.gefest.inc;
+
+import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.prefs.Preferences;
 
 class MainWindow extends JFrame {
@@ -26,6 +28,7 @@ class MainWindow extends JFrame {
     private JTextField txtFilter = new JTextField();
     private JTable table;
     private TableRowSorter sorter;
+    private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     MainWindow(){
         super();
@@ -59,17 +62,18 @@ class MainWindow extends JFrame {
         setTitle("Программа установки даты согласования цены заказа");
         setSize(600,400);
 
-        TableModel model = new TableModel(OrderEntityFactory.getOrderListFromServer());
+        TableModel model = new TableModel(RestApiClient.getOrderListFromServer());
         sorter = new TableRowSorter(model);
         table = new JTable(model);
         table.setRowSorter(sorter);
 
+        table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 
-
+        TableColumn planDateColumn = table.getColumnModel().getColumn(3);
+        planDateColumn.setCellRenderer(new DateFormatRenderer( format ));
         TableColumn priceDateColumn = table.getColumnModel().getColumn(4);
-
         priceDateColumn.setCellEditor(new DatePickerCellEditor());
-
+        priceDateColumn.setCellRenderer(new DateFormatRenderer( format ));
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -101,6 +105,18 @@ class MainWindow extends JFrame {
                 applyFilter();
             }
         });
+
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                TableCellEditor editor = table.getCellEditor();
+                if (editor != null) {
+                    editor.stopCellEditing();
+                }
+            }
+        });
+
         setVisible(true);
     }
 

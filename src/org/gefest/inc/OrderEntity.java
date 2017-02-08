@@ -4,13 +4,13 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3.
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
+
 package org.gefest.inc;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OrderEntity {
-
     private int    orderNumber;
     private String fullOrderNumber;
     private String caption;

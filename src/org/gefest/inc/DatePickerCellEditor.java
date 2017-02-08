@@ -12,8 +12,6 @@ import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.beans.PropertyVetoException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DatePickerCellEditor extends AbstractCellEditor implements TableCellEditor {
@@ -27,26 +25,11 @@ public class DatePickerCellEditor extends AbstractCellEditor implements TableCel
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
-        Date date = null;
-
         try {
-            if(value!=null)
-                 date = dateFormat.parse(value.toString());
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-              dpPriceDate.setDate(date);
+              dpPriceDate.setDate((Date) value);
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
-
         return dpPriceDate;
     }
 }

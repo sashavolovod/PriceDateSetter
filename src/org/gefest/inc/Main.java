@@ -4,6 +4,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3.
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
+
 package org.gefest.inc;
 
 import org.apache.log4j.Logger;
@@ -15,6 +16,8 @@ public class Main {
     private static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) {
+
+        Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
 
         logger.info("----------START LOGGING------------");
 

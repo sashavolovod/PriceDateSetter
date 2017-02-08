@@ -1,4 +1,3 @@
-package org.gefest.inc;
 /*
  * Created by Sasha Volovod on 03.02.17.
  * Copyright (c) 2017 Sasha Volovod. All rights reserved.
@@ -6,7 +5,11 @@ package org.gefest.inc;
  * You may obtain a copy of the License at https://www.gnu.org/licenses/gpl-3.0.html
  */
 
+package org.gefest.inc;
+
 import org.apache.log4j.Logger;
+
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -50,9 +53,9 @@ public class TableModel extends AbstractTableModel {
             case 2:
                 return order.getCaption();
             case 3:
-                return order.getPlanDate() == null ? null : dateFormat.format(order.getPlanDate());
+                return order.getPlanDate();
             case 4:
-                return order.getPriceDate() == null ? null : dateFormat.format(order.getPriceDate());
+                return order.getPriceDate();
             default:
                 return null;
         }
@@ -68,14 +71,21 @@ public class TableModel extends AbstractTableModel {
                 if(newDate==null || !newDate.equals(oldDate)) {
                     order.setPriceDate(newDate);
                     logger.info("Для заказа " + order.getOrderNumber() + " установлена дата " + (aValue == null ? "нет" : dateFormat.format((Date) aValue)));
+                    if(RestApiClient.postDate(order)) {
+                        logger.info("Изменения сохранены в базе данных.");
+                    } else {
+                        logger.error("Ошибка при сохранении изменений базе данных.");
+                        JOptionPane.showMessageDialog(null, "Ошибка при сохранении изменений базе данных");
+                    }
+
                 }
             }
         }
     }
 
     @Override
-    public boolean isCellEditable(int row, int col) {
-        switch (col) {
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
             case 0:
             case 1:
             case 2:
@@ -87,6 +97,23 @@ public class TableModel extends AbstractTableModel {
                 return false;
         }
     }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+            case 1:
+            case 2:
+                return String.class;
+            case 3:
+            case 4:
+                return Date.class;
+            default:
+                return Object.class;
+
+        }
+    }
+
     public OrderEntity getOrder(int rowIndex) {
         return orders.get(rowIndex);
     }
