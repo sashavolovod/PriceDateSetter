@@ -11,22 +11,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OrderEntity {
+    private Boolean status;
     private int    orderNumber;
     private String fullOrderNumber;
     private String caption;
     private Date   planDate;
     private Date   priceDate;
     private String customer;
+    private Integer percentage;
 
     public OrderEntity() { }
 
-    OrderEntity(int orderNumber, String fullOrderNumber, String customer, String caption, Date planDate, Date priceDate) {
+    OrderEntity(Boolean status, int orderNumber, String fullOrderNumber, String customer, String caption, Date planDate, Date priceDate, Integer percentage) {
+        this.status = status;
         this.orderNumber = orderNumber;
         this.fullOrderNumber = fullOrderNumber;
         this.customer = customer;
         this.caption = caption;
         this.planDate = planDate;
         this.priceDate = priceDate;
+        this.percentage = percentage;
     }
 
     public int getOrderNumber() {
@@ -69,6 +73,22 @@ public class OrderEntity {
 
     public void setPriceDate(Date priceDate) {
         this.priceDate = priceDate;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public Integer getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(Integer percentage) {
+        this.percentage = percentage;
     }
 
     @Override

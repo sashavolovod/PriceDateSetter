@@ -18,7 +18,16 @@ import java.util.List;
 
 public class TableModel extends AbstractTableModel {
     List<OrderEntity> orders;
-    private List<String> columnNames = Arrays.asList("Номер заказа", "Заказчик", "Наименование работ", "Плановая дата изготовления", "Дата согласования цены");
+
+    public static final int STATUS = 0;
+    public static final int FULL_ORDER_NUMBER = 1;
+    public static final int CUSTOMER = 2;
+    public static final int CAPTION = 3;
+    public static final int PLAN_DATE = 4;
+    public static final int PERCENTAGE = 5;
+    public static final int PRICE_DATE = 6;
+
+    private List<String> columnNames = Arrays.asList("Срочно", "Номер заказа", "Заказчик", "Наименование работ", "Плановая дата изготовления", "Процент выполнения","Дата согласования цены");
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
     private static Logger logger = Logger.getLogger(TableModel.class);
 
@@ -33,7 +42,7 @@ public class TableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return columnNames.size();
     }
 
     @Override
@@ -46,16 +55,20 @@ public class TableModel extends AbstractTableModel {
         OrderEntity order = orders.get(rowIndex);
 
         switch (columnIndex) {
-            case 0:
+            case STATUS:
+                return order.getStatus();
+            case FULL_ORDER_NUMBER:
                 return order.getFullOrderNumber();
-            case 1:
+            case CUSTOMER:
                 return order.getCustomer();
-            case 2:
+            case CAPTION:
                 return order.getCaption();
-            case 3:
+            case PLAN_DATE:
                 return order.getPlanDate();
-            case 4:
+            case PRICE_DATE:
                 return order.getPriceDate();
+            case PERCENTAGE:
+                return order.getPercentage();
             default:
                 return null;
         }
@@ -64,7 +77,7 @@ public class TableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         OrderEntity order = orders.get(rowIndex);
-        if(columnIndex==4) {
+        if(columnIndex==PRICE_DATE) {
             Date oldDate = order.getPriceDate();
             if(!(oldDate==null && aValue==null)) {
                 Date newDate = (Date) aValue;
@@ -77,7 +90,6 @@ public class TableModel extends AbstractTableModel {
                         logger.error("Ошибка при сохранении изменений базе данных.");
                         JOptionPane.showMessageDialog(null, "Ошибка при сохранении изменений базе данных");
                     }
-
                 }
             }
         }
@@ -86,12 +98,7 @@ public class TableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                return false;
-            case 4:
+            case PRICE_DATE:
                 return true;
             default:
                 return false;
@@ -101,16 +108,19 @@ public class TableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
-            case 0:
-            case 1:
-            case 2:
+            case STATUS:
+                return Boolean.class;
+            case FULL_ORDER_NUMBER:
+            case CUSTOMER:
+            case CAPTION:
                 return String.class;
-            case 3:
-            case 4:
+            case PLAN_DATE:
+            case PRICE_DATE:
                 return Date.class;
+            case PERCENTAGE:
+                return Integer.class;
             default:
                 return Object.class;
-
         }
     }
 

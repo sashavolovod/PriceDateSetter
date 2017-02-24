@@ -27,6 +27,7 @@ class MainWindow extends JFrame {
 
     private static final int DEFAULT_WIDTH = 648;
     private static final int DEFAULT_HEIGHT = 480;
+    private static final int HEADER_HEIGHT = 30;
     private Preferences prefs  = Preferences.userNodeForPackage(MainWindow.class).node("MainWindow");
     private static Logger logger = Logger.getLogger(MainWindow.class);
     private JTextField txtFilter = new JTextField();
@@ -71,11 +72,9 @@ class MainWindow extends JFrame {
         table = new JTable(model);
         table.setRowSorter(sorter);
 
-        //table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
-
-        TableColumn planDateColumn = table.getColumnModel().getColumn(3);
+        TableColumn planDateColumn = table.getColumnModel().getColumn(TableModel.PLAN_DATE);
         planDateColumn.setCellRenderer(new DateFormatRenderer( format ));
-        TableColumn priceDateColumn = table.getColumnModel().getColumn(4);
+        TableColumn priceDateColumn = table.getColumnModel().getColumn(TableModel.PRICE_DATE);
         priceDateColumn.setCellEditor(new DatePickerCellEditor());
         priceDateColumn.setCellRenderer(new DateFormatRenderer( format ));
 
@@ -85,6 +84,13 @@ class MainWindow extends JFrame {
         JScrollPane scroll = new JScrollPane(table);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setColumnHeader(new JViewport() {
+            @Override public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                d.height = HEADER_HEIGHT;
+                return d;
+            }
+        });
 
         JPanel panel = new JPanel(new MigLayout("","[][grow]" , "[][grow]"));
         panel.add(new JLabel("Фильтр: "));
@@ -113,7 +119,6 @@ class MainWindow extends JFrame {
             }
         });
 
-
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -121,18 +126,22 @@ class MainWindow extends JFrame {
                 if (editor != null) {
                     editor.stopCellEditing();
                 }
-
                 logger.info("----------END LOGGING------------");
             }
         });
 
         setVisible(true);
+
+        Font oldFont = table.getFont();
+        Font newFont = new Font(oldFont.getName(), Font.PLAIN, 15);
+        table.setFont(newFont);
+        table.setRowHeight(22);
+        table.getTableHeader().setFont(newFont);
     }
 
     private void applyFilter() {
         String filterString = txtFilter.getText().trim();
         if(filterString.length()==0) {
-            System.out.println("clear filter");
             sorter.setRowFilter(null);
             return;
         }
