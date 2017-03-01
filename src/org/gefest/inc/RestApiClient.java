@@ -30,7 +30,7 @@ import java.util.List;
 
 public class RestApiClient {
     private static Logger logger = Logger.getLogger(RestApiClient.class);
-    private static final String url = "http://tool/api/pricedate1.php";
+    private static final String url = "http://tool/api/pricedate.php";
 
     public static boolean postDate(OrderEntity order){
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");

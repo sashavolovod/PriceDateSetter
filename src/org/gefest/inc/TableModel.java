@@ -31,8 +31,21 @@ public class TableModel extends AbstractTableModel {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
     private static Logger logger = Logger.getLogger(TableModel.class);
 
+    private Icon bulletRedIcon;
+
     public TableModel(List<OrderEntity> orders) {
         this.orders = orders;
+        bulletRedIcon = createImageIcon("/images/bullet-red.png", "срочный");
+    }
+
+    protected Icon createImageIcon(String path, String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            logger.error("Couldn't find file: " + path);
+            return null;
+        }
     }
 
     @Override
@@ -56,7 +69,11 @@ public class TableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case STATUS:
-                return order.getStatus();
+                if(order.getStatus()) {
+                    return bulletRedIcon;
+                }
+                else
+                    return null;
             case FULL_ORDER_NUMBER:
                 return order.getFullOrderNumber();
             case CUSTOMER:
@@ -109,7 +126,7 @@ public class TableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
             case STATUS:
-                return Boolean.class;
+                return Icon.class;
             case FULL_ORDER_NUMBER:
             case CUSTOMER:
             case CAPTION:

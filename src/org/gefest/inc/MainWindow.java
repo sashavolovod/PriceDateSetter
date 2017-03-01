@@ -13,13 +13,8 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.prefs.Preferences;
 
@@ -28,23 +23,17 @@ class MainWindow extends JFrame {
     private static final int DEFAULT_WIDTH = 648;
     private static final int DEFAULT_HEIGHT = 480;
     private static final int HEADER_HEIGHT = 30;
+    private static final int FONT_SIZE = 15;
     private Preferences prefs  = Preferences.userNodeForPackage(MainWindow.class).node("MainWindow");
     private static Logger logger = Logger.getLogger(MainWindow.class);
     private JTextField txtFilter = new JTextField();
-    private JTable table;
+    private SaveStateTable table;
     private TableRowSorter sorter;
     private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     MainWindow(){
         super();
         createUi();
-
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                saveProperties();
-            }
-        });
     }
 
     private void saveProperties() {
@@ -67,9 +56,16 @@ class MainWindow extends JFrame {
         setTitle("Программа установки даты согласования цены заказа");
         setSize(600,400);
 
+        Font oldFont = txtFilter.getFont();
+        Font newFont = new Font(oldFont.getName(), Font.PLAIN, FONT_SIZE);
+        txtFilter.setFont(newFont);
+
+        JLabel lbFilter = new JLabel("Фильтр: ");
+        lbFilter.setFont(newFont);
+
         TableModel model = new TableModel(RestApiClient.getOrderListFromServer());
         sorter = new TableRowSorter(model);
-        table = new JTable(model);
+        table = new SaveStateTable("PriceDateSetterTable",model);
         table.setRowSorter(sorter);
 
         TableColumn planDateColumn = table.getColumnModel().getColumn(TableModel.PLAN_DATE);
@@ -78,24 +74,19 @@ class MainWindow extends JFrame {
         priceDateColumn.setCellEditor(new DatePickerCellEditor());
         priceDateColumn.setCellRenderer(new DateFormatRenderer( format ));
 
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        table.getColumnModel().getColumn(TableModel.PERCENTAGE).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(TableModel.FULL_ORDER_NUMBER).setCellRenderer(centerRenderer);
+
         ((DefaultTableCellRenderer)table.getTableHeader().getDefaultRenderer())
                 .setHorizontalAlignment(SwingConstants.CENTER);
 
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setColumnHeader(new JViewport() {
-            @Override public Dimension getPreferredSize() {
-                Dimension d = super.getPreferredSize();
-                d.height = HEADER_HEIGHT;
-                return d;
-            }
-        });
-
         JPanel panel = new JPanel(new MigLayout("","[][grow]" , "[][grow]"));
-        panel.add(new JLabel("Фильтр: "));
+        panel.add(lbFilter);
         panel.add(txtFilter, "growx, pushx, wrap");
-        panel.add(scroll, "span, grow");
+        panel.add(new ScrollTable(table, HEADER_HEIGHT), "span, grow");
 
         add(panel, BorderLayout.CENTER);
 
@@ -122,21 +113,12 @@ class MainWindow extends JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                TableCellEditor editor = table.getCellEditor();
-                if (editor != null) {
-                    editor.stopCellEditing();
-                }
-                logger.info("----------END LOGGING------------");
+                onWindowClosing();
             }
         });
 
         setVisible(true);
 
-        Font oldFont = table.getFont();
-        Font newFont = new Font(oldFont.getName(), Font.PLAIN, 15);
-        table.setFont(newFont);
-        table.setRowHeight(22);
-        table.getTableHeader().setFont(newFont);
     }
 
     private void applyFilter() {
@@ -156,5 +138,15 @@ class MainWindow extends JFrame {
         };
 
         sorter.setRowFilter(filter);
+    }
+
+    private void onWindowClosing() {
+        TableCellEditor editor = table.getCellEditor();
+        if (editor != null) {
+            editor.stopCellEditing();
+        }
+        table.saveState();
+        saveProperties();
+        logger.info("----------END LOGGING------------");
     }
 }

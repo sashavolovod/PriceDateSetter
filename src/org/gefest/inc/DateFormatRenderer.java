@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.text.Format;
 
-public class DateFormatRenderer extends DefaultTableCellRenderer {
+    public class DateFormatRenderer extends DefaultTableCellRenderer {
     private Format format;
 
     public DateFormatRenderer(Format format) {
